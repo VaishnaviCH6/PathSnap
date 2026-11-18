@@ -35,10 +35,17 @@ Thumbs.db
 # Local generated caches
 .cache/
 
-# Dataset files and local experiment artifacts
+# Dataset files
 /dataset/
+
+# Member 2 outputs
+/outputs/
+
+# Member 3 model artifacts
 /artifacts/*.joblib
 /artifacts/*.pkl
+
+# Optuna SQLite databases
 /experiments/results/*.db
 /experiments/results/*.sqlite
 /experiments/results/*.sqlite3
