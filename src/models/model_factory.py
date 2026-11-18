@@ -35,6 +35,7 @@ def get_models(
     knn_parameters = {
         "n_neighbors": 5,
         "metric": "minkowski",
+        "n_jobs": -1,
         **parameters.get("KNN", {}),
     }
     tree_parameters = {
@@ -48,7 +49,7 @@ def get_models(
         "max_depth": None,
         "min_samples_leaf": 1,
         "random_state": random_state,
-        "n_jobs": -1,
+        "n_jobs": 1,
         **parameters.get("Random Forest", {}),
     }
     hist_parameters = {

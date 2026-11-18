@@ -1,0 +1,63 @@
+{
+  "candidate_rows": 1084912,
+  "labeled_candidate_rows": 567307,
+  "unlabeled_candidate_rows": 517605,
+  "unique_training_trips": 80,
+  "positive_labels": 111306,
+  "negative_labels": 456001,
+  "positive_class_proportion": 0.1962006462109581,
+  "duplicate_observation_candidate_rows": 0,
+  "duplicate_observation_candidate_keys": 0,
+  "numeric_dtypes": {
+    "distance_to_segment_m": "float64",
+    "direction_difference_deg": "float64",
+    "gps_step_distance_m": "float64",
+    "time_difference_s": "float64",
+    "gps_speed_mps": "float64",
+    "segment_length_m": "float64",
+    "projection_fraction": "float64",
+    "gps_heading_deg": "float64",
+    "road_bearing_deg": "float64",
+    "gps_heading_change_deg": "float64"
+  },
+  "missing_features": {
+    "distance_to_segment_m": 0,
+    "direction_difference_deg": 534,
+    "gps_step_distance_m": 534,
+    "time_difference_s": 534,
+    "gps_speed_mps": 534,
+    "segment_length_m": 0,
+    "projection_fraction": 0,
+    "gps_heading_deg": 534,
+    "road_bearing_deg": 0,
+    "gps_heading_change_deg": 1054
+  },
+  "infinite_features": {
+    "distance_to_segment_m": 0,
+    "direction_difference_deg": 0,
+    "gps_step_distance_m": 0,
+    "time_difference_s": 0,
+    "gps_speed_mps": 0,
+    "segment_length_m": 0,
+    "projection_fraction": 0,
+    "gps_heading_deg": 0,
+    "road_bearing_deg": 0,
+    "gps_heading_change_deg": 0
+  },
+  "positive_labels_per_observation": {
+    "1": 111306
+  },
+  "observations_with_positive_label": 111306,
+  "eligible_observations": 111306,
+  "eligible_observations_missing_positive": 0,
+  "candidate_status_counts": {
+    "candidates_present": 189902,
+    "no_generated_candidates": 18230,
+    "candidate_miss": 285
+  },
+  "alignment_status_counts": {
+    "aligned": 112313,
+    "ambiguous": 76112,
+    "no_route_alignment": 19992
+  }
+}

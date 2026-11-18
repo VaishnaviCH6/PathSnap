@@ -1,0 +1,23 @@
+{
+  "timestamp_utc": "20261118T112852Z",
+  "experiment_type": "real_full_baseline",
+  "dataset": "dataset\\m2_handoff\\train_labelled_candidates.csv",
+  "labeled_rows": 567307,
+  "trip_count": 80,
+  "fold_count": 5,
+  "random_seed": 42,
+  "feature_columns": [
+    "distance_to_segment_m",
+    "direction_difference_deg",
+    "gps_step_distance_m",
+    "time_difference_s",
+    "gps_speed_mps",
+    "segment_length_m",
+    "projection_fraction",
+    "gps_heading_deg",
+    "road_bearing_deg",
+    "gps_heading_change_deg"
+  ],
+  "positive_class": 1,
+  "primary_metric": "mean_f1"
+}

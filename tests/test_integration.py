@@ -30,6 +30,8 @@ def test_prediction_contract_preserves_identifiers(tmp_path):
         "trip_id": ["a", "a", "b", "b"],
         "gps_id": [1, 2, 3, 4],
         "candidate_id": [10, 11, 20, 21],
+        "observation_id": [1, 2, 3, 4],
+        "candidate_arc_id": [1000, 1001, 1002, 1003],
         "arc_id": [100, 101, 102, 103],
         "f1": X[:, 0],
         "f2": X[:, 1],
@@ -37,5 +39,14 @@ def test_prediction_contract_preserves_identifiers(tmp_path):
 
     output = predict_candidates(data, model_path)
     assert len(output) == len(data)
-    assert set(output.columns) >= {"trip_id", "gps_id", "candidate_id", "arc_id", "predicted_label", "positive_probability"}
+    assert set(output.columns) >= {
+        "trip_id",
+        "gps_id",
+        "observation_id",
+        "candidate_id",
+        "candidate_arc_id",
+        "arc_id",
+        "predicted_label",
+        "positive_probability",
+    }
     assert np.all((output["positive_probability"] >= 0.0) & (output["positive_probability"] <= 1.0))

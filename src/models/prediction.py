@@ -12,7 +12,9 @@ from src.models.model_io import load_model, validate_feature_frame
 IDENTIFIER_COLUMNS = (
     "trip_id",
     "gps_id",
+    "observation_id",
     "candidate_id",
+    "candidate_arc_id",
     "arc_id",
 )
 

@@ -35,5 +35,10 @@ Thumbs.db
 # Local generated caches
 .cache/
 
-# Dataset files (kept outside Git)
-dataset/
+# Dataset files and local experiment artifacts
+/dataset/
+/artifacts/*.joblib
+/artifacts/*.pkl
+/experiments/results/*.db
+/experiments/results/*.sqlite
+/experiments/results/*.sqlite3
