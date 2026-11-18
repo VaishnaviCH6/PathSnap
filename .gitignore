@@ -11,24 +11,41 @@ __pycache__/
 .venv/
 venv/
 env/
+
 # Environment variables and secrets
 .env
 .env.*
 !.env.example
+
 # Jupyter
 .ipynb_checkpoints/
+
 # IDE
 .vscode/
 .idea/
+
 # OS
 .DS_Store
 Thumbs.db
+
 # Temporary files
 *.log
 *.tmp
+
 # Local generated caches
 .cache/
-# Dataset files (kept outside Git)
-dataset/
-# Generated M2 outputs
-outputs/
+
+# Dataset files
+/dataset/
+
+# Member 2 outputs
+/outputs/
+
+# Member 3 model artifacts
+/artifacts/*.joblib
+/artifacts/*.pkl
+
+# Optuna SQLite databases
+/experiments/results/*.db
+/experiments/results/*.sqlite
+/experiments/results/*.sqlite3
