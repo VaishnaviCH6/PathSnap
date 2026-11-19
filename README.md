@@ -1,54 +1,21 @@
-# PathSnap
-Distributed Map-Matching & Route Reconstruction
+# PathSnap M4 map display sync fix
 
-**Course:** UE24CS352A – Machine Learning  
-**Project:** Machine Learning Hackathon
+This frontend-only overlay fixes a stale-map mismatch in which the trip dropdown
+shows the newly requested trip while the iframe still displays the previously
+reconstructed trip during an in-flight request.
 
-## Overview
+It does not change ML/HMM predictions, road geometry, trained artifacts, or
+accuracy results.
 
-PathSnap is a distributed machine learning system designed to reconstruct realistic vehicle trajectories by matching noisy GPS observations to an underlying road network.
+To install in PowerShell from the repo root (after backing up local changes):
 
-The system explores machine learning-based map matching, Bayesian hyperparameter optimisation, and Hidden Markov Model (HMM) with Viterbi decoding for route reconstruction.
+    Expand-Archive -LiteralPath "$env:USERPROFILE\Downloads\PathSnap_M4_Map_Display_Fix.zip" -DestinationPath "D:\PathSnap" -Force
 
-## Objectives
+Restart the frontend Uvicorn process and hard-refresh in the browser.
 
-- Analyse and preprocess GPS trajectory and road network data.
-- Develop meaningful spatial and temporal features.
-- Train and compare multiple machine learning models.
-- Perform Bayesian hyperparameter optimisation.
-- Implement HMM and Viterbi-based route reconstruction.
-- Develop a FastAPI backend and evaluator-facing interface.
-- Deploy and evaluate the complete distributed system.
+This fix hides any prior map when a different trip is selected, disables the
+trip dropdown during reconstruction, shows a loading placeholder, and ensures
+that a failed request never leaves an old map visible under the new trip ID.
 
-## Project Structure
-
-- `dataset/` – Dataset partitions
-- `notebooks/` – Exploratory analysis and experiments
-- `src/` – Data processing, features, models and route reconstruction
-- `backend/` – FastAPI backend
-- `frontend/` – Evaluator-facing UI
-- `experiments/` – Experiment configurations and logs
-- `artifacts/` – Saved models and configurations
-- `results/` – Evaluation outputs and visualisations
-- `tests/` – Automated tests
-- `docs/` – Project documentation
-
-## Installation
-
-Installation instructions will be updated as dependencies and components are implemented.
-
-## Execution
-
-Execution instructions will be added for data processing, model training, prediction and evaluation.
-
-## Deployment
-
-Deployment instructions for the two-laptop architecture will be documented after backend and frontend integration.
-
-## Team
-
-Team members and responsibilities will be documented here.
-
-## Project Status
-
-Initial repository setup.
+Sharp detours in a fully loaded, correct-trip route are a separate ML/HMM or
+road-network issue and must be evaluated using reference-route metrics.

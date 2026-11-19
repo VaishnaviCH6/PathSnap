@@ -1,0 +1,20 @@
+{
+  "tested_with": "M2 hmm.py snapshot + trained M3 Random Forest artifact; student-testing input trip 00000052",
+  "date": "2026-11-19",
+  "test_scope": "development only; not held-out route accuracy",
+  "model": "random_forest_tuned_20261118T123057Z.joblib",
+  "mode": "integrated",
+  "trip_id": "00000052",
+  "observation_count": 262,
+  "matched_count": 262,
+  "route_arc_count": 184,
+  "route_segment_count": 1,
+  "route_break_indices": [],
+  "route_continuity": 1.0,
+  "route_continuity_note": "Backend arc-adjacency metric, not route ground truth accuracy",
+  "accuracy": null,
+  "inference_ms": 1708.556,
+  "api_http_status": 200,
+  "folium_map_rendered": true,
+  "automated_tests": "35 passed (M4+M2 HMM relevant suites)"
+}

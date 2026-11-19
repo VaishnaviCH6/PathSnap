@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PathSnap | Route Reconstruction</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1220;--panel:#111d31;--panel2:#17263e;--edge:#273954;--text:#e7eefc;--muted:#92a6c2;--blue:#5da8ff;--green:#34d399;--orange:#fbbf24;--red:#fb7185}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% 5%,#172c4a 0,#0b1220 36%);color:var(--text);font:15px/1.5 system-ui,-apple-system,Segoe UI,Arial,sans-serif}
+header{padding:19px max(24px,calc((100vw - 1460px)/2));border-bottom:1px solid var(--edge);display:flex;gap:12px;align-items:center;background:#0b1526dd;backdrop-filter:blur(16px)}
+.logo{border-radius:13px;background:linear-gradient(140deg,#2563eb,#0d9488);padding:10px;box-shadow:0 3px 24px #2563eb44}.logo svg{width:23px;height:23px;display:block}
+.brand{font-size:19px;font-weight:790;letter-spacing:-.6px}.subtitle{color:var(--muted);font-size:11px;letter-spacing:.11em;text-transform:uppercase;margin-top:-3px}.right{margin-left:auto;display:flex;align-items:center;gap:10px}.indicator{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--orange)}.indicator.ok{background:var(--green)}.indicator.error{background:var(--red)}
+.container{max-width:1492px;margin:auto;padding:25px 24px 32px;display:grid;grid-template-columns:350px minmax(0,1fr);gap:20px}.panel{background:linear-gradient(140deg,#16253c,#101b2f);border:1px solid var(--edge);border-radius:18px;box-shadow:0 6px 24px #0003}.sidebar{padding:23px;align-self:start}.eyebrow{font-size:11px;font-weight:750;color:var(--blue);letter-spacing:.13em;text-transform:uppercase}.sidebar h1{font-size:26px;letter-spacing:-1px;line-height:1.15;margin:8px 0 10px}.description{color:var(--muted);font-size:13px;margin:0 0 22px}.line{border:0;border-top:1px solid var(--edge);margin:24px 0}
+label{display:block;margin-bottom:8px;color:#c2d1e8;font-size:13px;font-weight:650}select{width:100%;background:#0b1729;border:1px solid #426081;color:#f1f6ff;padding:13px;border-radius:10px;font-size:14px;outline:0}select:focus{border-color:var(--blue)}button{width:100%;border:0;background:linear-gradient(125deg,#2876e9,#1599b3);color:white;border-radius:11px;padding:13px 16px;font-weight:750;font-size:14px;cursor:pointer;margin-top:14px;transition:opacity .2s}button:hover{opacity:.88}button:disabled{opacity:.45;cursor:not-allowed}
+.note{border:1px solid #785b25;background:#332a16;color:#f6cd78;border-radius:10px;padding:12px 13px;font-size:12px;line-height:1.5;margin-top:18px}.note.real{background:#15372c;border-color:#2b7254;color:#a9e8c8}.tiny{font-size:12px;color:var(--muted)}.status{font-size:12px;color:var(--muted)}.status strong{color:var(--text)}
+.main{min-width:0;display:flex;flex-direction:column;gap:18px}.headline{display:flex;justify-content:space-between;align-items:center;gap:10px}.headline h2{font-size:20px;letter-spacing:-.4px;margin:2px 0}.pill{border-radius:30px;border:1px solid #365a7a;background:#19354e;color:#aed9ff;padding:6px 11px;font-size:11px;font-weight:700;white-space:nowrap}.map-wrap{padding:8px;height:min(66vh,650px);min-height:420px;position:relative;overflow:hidden}.map{height:100%;width:100%;border:0;border-radius:12px;background:#15243a}.empty{position:absolute;inset:8px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:10px;background:radial-gradient(circle at center,#1a3750,#101b2e 60%);border-radius:12px;text-align:center;padding:18px}.empty svg{width:70px;height:70px;opacity:.7}.empty strong{font-size:17px}.empty span{color:var(--muted);max-width:380px;font-size:13px}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.metric{padding:15px 17px}.metric .caption{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.07em}.metric .value{font-size:25px;font-weight:790;margin-top:4px;letter-spacing:-.5px;font-variant-numeric:tabular-nums}.metric .sub{color:var(--muted);font-size:11px}.arc-box{padding:17px 19px}.arc-box h3{margin:0 0 7px;font-size:14px}.arc-list{font:12px/1.5 Consolas,monospace;color:#b8d3ed;overflow-wrap:anywhere;max-height:68px;overflow:auto}.error{display:none;background:#4a1c29;border:1px solid #85445a;color:#ffb4c3;border-radius:10px;padding:12px;margin-top:13px;font-size:12px}
+footer{text-align:center;color:var(--muted);font-size:11px;padding:0 18px 22px}@media(max-width:1050px){.container{grid-template-columns:290px minmax(0,1fr)}.metrics{grid-template-columns:repeat(2,1fr)}}@media(max-width:740px){.container{grid-template-columns:1fr;padding:16px}.sidebar{padding:20px}.map-wrap{min-height:370px;height:50vh}.right small{display:none}header{padding:15px}.metric .value{font-size:23px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18 10 6l4 9 6-8"/><circle cx="4" cy="18" r="2"/><circle cx="10" cy="6" r="2"/><circle cx="14" cy="15" r="2"/><circle cx="20" cy="7" r="2"/></svg></div>
+  <div><div class="brand">PathSnap</div><div class="subtitle">Distributed map matching</div></div>
+  <div class="right"><span id="connection-dot" class="indicator"></span><span class="status" id="connection">Connecting to backend…</span></div>
+</header>
+<div class="container">
+  <aside class="panel sidebar">
+    <div class="eyebrow">M4 · Evaluator interface</div>
+    <h1>Route reconstruction</h1>
+    <p class="description">Choose a trip and request a map-matched trajectory. Processing occurs on the FastAPI backend.</p>
+    <label for="trip">Available trips</label>
+    <select id="trip" disabled><option>Loading trips…</option></select>
+    <button id="run" disabled>Reconstruct selected route</button>
+    <div class="error" id="error" role="alert"></div>
+    <hr class="line">
+    <div class="eyebrow">Pipeline status</div>
+    <div class="status" style="margin-top:12px">Backend mode: <strong id="mode">—</strong></div>
+    <div class="status" style="margin-top:8px">Dataset partition: <strong id="partition">—</strong></div>
+    <div class="status" style="margin-top:8px">Trips available: <strong id="count">—</strong></div>
+    <div id="notice" class="note">Demo, preview and model-only outputs are not complete ML+HMM route predictions.</div>
+    <p class="tiny" style="margin-top:16px">M1 provides the dataset. M2 provides candidate generation and HMM/Viterbi. M3 provides trained model artifacts. This UI never accesses reference-route labels.</p>
+  </aside>
+  <main class="main">
+    <div class="headline"><div><div class="eyebrow">Route workspace</div><h2 id="map-title">GPS and selected road segments</h2></div><span class="pill" id="trip-pill">NO TRIP SELECTED</span></div>
+    <div class="panel map-wrap">
+      <iframe id="map" class="map" title="Interactive GPS and road network map" style="display:none"></iframe>
+      <div id="empty" class="empty">
+        <svg viewBox="0 0 80 80" fill="none" stroke="#60a5fa" stroke-width="2"><path d="M15 64 30 21l14 32 17-38"/><circle cx="15" cy="64" r="5" fill="#183f61"/><circle cx="30" cy="21" r="5" fill="#183f61"/><circle cx="44" cy="53" r="5" fill="#183f61"/><circle cx="61" cy="15" r="5" fill="#183f61"/></svg>
+        <strong>Map is ready</strong><span>Select a trip and click <b>Reconstruct selected route</b> to load its GPS and returned road segments.</span>
+      </div>
+    </div>
+    <section class="metrics" aria-label="Route metrics">
+      <div class="panel metric"><div class="caption">GPS observations</div><div class="value" id="obs">—</div><div class="sub">Original trajectory points</div></div>
+      <div class="panel metric"><div class="caption">Matched points</div><div class="value" id="matched">—</div><div class="sub">Observations with an arc</div></div>
+      <div class="panel metric"><div class="caption">Route arc entries</div><div class="value" id="arcs">—</div><div class="sub">Chronological sequence</div></div>
+      <div class="panel metric"><div class="caption">Backend inference</div><div class="value" id="time">—</div><div class="sub">Execution time in ms</div></div>
+    </section>
+    <section class="panel arc-box"><h3>Route details</h3><div class="tiny">Continuity: <span id="continuity">—</span> &nbsp;|&nbsp; <span id="accuracy-label">Accuracy</span>: <span id="accuracy">Not available</span></div><div class="tiny" style="margin-top:9px">Returned arc IDs:</div><div id="sequence" class="arc-list">No route has been requested.</div></section>
+  </main>
+</div>
+<footer>PathSnap · PES University · M4 FastAPI &amp; Frontend · Predictions originate on the backend only</footer>
+<script>
+const $=id=>document.getElementById(id);
+const setConn=(ok,msg)=>{ $('connection-dot').className='indicator '+(ok?'ok':'error');$('connection').textContent=msg; };
+const showError=msg=>{ const e=$('error');e.style.display='block';e.textContent=msg; };
+const clearError=()=>{ $('error').style.display='none';$('error').textContent=''; };
+const percent=n=>typeof n==='number'?(n*100).toFixed(1)+'%':'N/A';
+async function getJson(url,opts){ const response=await fetch(url,opts);let payload;try{payload=await response.json()}catch{throw new Error('Invalid JSON returned by server')};if(!response.ok)throw new Error(typeof payload.detail==='string'?payload.detail:`Request failed (HTTP ${response.status})`);return payload; }
+async function loadTrips(){
+ try{
+  const [health,trips]=await Promise.all([getJson('/api/health'),getJson('/api/trips')]);
+  const ids=trips.trip_ids||[];if(!ids.length)throw Error('Backend provided no trip IDs');
+  $('trip').replaceChildren(...ids.map(id=>{const o=document.createElement('option');o.value=id;o.textContent=id;return o}));
+  $('trip').disabled=false;$('run').disabled=false;$('mode').textContent=health.mode.toUpperCase();
+  $('partition').textContent=health.partition;$('count').textContent=String(ids.length);
+  $('notice').textContent=health.notice||'Waiting for route selection';
+  $('notice').classList.toggle('real',health.mode==='integrated');
+  setConn(true,'Backend connected · '+health.mode.toUpperCase());clearError();
+ }catch(error){setConn(false,'Backend unavailable');showError(error.message+' — Verify Terminal 1 is running.');$('trip').innerHTML='<option>Unable to load trips</option>';$('run').disabled=true;}
+}
+// Never display a previous trip's route as though it belongs to the new selection.
+function resetTripMap(tripId, heading, detail){
+ $('map').removeAttribute('srcdoc');
+ $('map').style.display='none';
+ $('empty').style.display='flex';
+ $('empty').querySelector('strong').textContent=heading;
+ $('empty').querySelector('span').textContent=detail;
+ $('map-title').textContent='Trip '+tripId+' — '+heading.toLowerCase();
+ $('trip-pill').textContent=tripId+' · NOT READY';
+ for(const field of ['obs','matched','arcs','time','continuity','accuracy'])$(field).textContent='—';
+ $('sequence').textContent='No route loaded for this trip.';
+}
+$('trip').addEventListener('change',()=>{
+ const tripId=$('trip').value;
+ if(!tripId || $('trip').disabled)return;
+ resetTripMap(tripId,'Select reconstruct','Click Reconstruct selected route to load this trip.');
+});
+$('run').addEventListener('click',async()=>{
+ const tripId=$('trip').value;
+ clearError();
+ $('trip').disabled=true;
+ $('run').disabled=true;
+ $('run').textContent='Reconstructing…';
+ resetTripMap(tripId,'Reconstructing trip '+tripId,'Loading this trip from FastAPI; the previous trip is hidden.');
+ try{
+  const d=await getJson('/api/reconstruct',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({trip_id:tripId})});
+  $('trip-pill').textContent=d.trip_id+' · '+d.mode.toUpperCase();
+  $('map-title').textContent='Trip '+d.trip_id+(d.mode==='integrated'?' — HMM-reconstructed route':' — selected candidate road arcs');
+  $('obs').textContent=Number(d.observation_count).toLocaleString();
+  $('matched').textContent=Number(d.matched_count).toLocaleString();
+  $('arcs').textContent=Number(d.route_arc_count).toLocaleString();
+  $('time').textContent=Number(d.inference_ms).toFixed(1);
+  $('continuity').textContent=percent(d.route_continuity);
+  $('accuracy-label').textContent=(d.partition==='student_test' && d.mode==='integrated')?'Student-test Top-1 accuracy':'Accuracy';
+  $('accuracy').textContent=percent(d.accuracy);
+  const breaks=new Set(d.route_break_indices||[]);
+  $('sequence').textContent=(d.route_arc_ids||[]).map((a,i)=>
+    (i===0?'':(breaks.has(i)?'  | ROUTE BREAK |  ':', '))+a
+  ).join('')||'No route arcs returned';
+  $('notice').textContent=d.notice;
+  $('map').srcdoc=d.map_html;$('map').style.display='block';$('empty').style.display='none';
+ }catch(error){
+  showError(error.message);
+  resetTripMap(tripId,'Reconstruction failed',error.message);
+ }finally{
+  $('trip').disabled=false;
+  $('run').disabled=false;
+  $('run').textContent='Reconstruct selected route';
+ }
+});
+loadTrips();
+</script>
+</body>
+</html>
